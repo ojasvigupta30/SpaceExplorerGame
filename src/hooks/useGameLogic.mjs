@@ -24,7 +24,9 @@ const useGameLogic = () => {
   // Update bullet positions
   const updateBullets = () => {
     setBullets((prevBullets) =>
-      prevBullets.map((bullet) => ({ ...bullet, y: bullet.y - 5 })).filter((bullet) => bullet.y > 0)
+      prevBullets
+        .map((bullet) => ({ ...bullet, y: bullet.y - 5 })) // Move bullets up
+        .filter((bullet) => bullet.y > 0) // Keep bullets on screen
     );
   };
 
@@ -38,34 +40,32 @@ const useGameLogic = () => {
   const updateEnemies = () => {
     setEnemies((prevEnemies) =>
       prevEnemies
-        .map((enemy) => ({ ...enemy, y: enemy.y + enemy.speed }))
-        .filter((enemy) => enemy.y < 600)
+        .map((enemy) => ({ ...enemy, y: enemy.y + enemy.speed })) // Move enemies down
+        .filter((enemy) => enemy.y < 600) // Keep enemies on screen
     );
   };
 
   // Check for collisions between bullets and enemies
   const checkCollisions = () => {
-    let updatedEnemies = [...enemies];
-    let updatedBullets = [...bullets];
+    let remainingEnemies = [...enemies];
+    let remainingBullets = [...bullets];
 
-    bullets.forEach((bullet, bulletIndex) => {
-      enemies.forEach((enemy, enemyIndex) => {
-        if (
-          bullet.x > enemy.x &&
-          bullet.x < enemy.x + 30 &&
-          bullet.y > enemy.y &&
-          bullet.y < enemy.y + 30
-        ) {
-          // Collision detected
-          updatedEnemies.splice(enemyIndex, 1); // Remove enemy
-          updatedBullets.splice(bulletIndex, 1); // Remove bullet
+    remainingBullets = remainingBullets.filter((bullet) => {
+      let bulletHit = false;
+      remainingEnemies = remainingEnemies.filter((enemy) => {
+        const hit = bullet.x > enemy.x && bullet.x < enemy.x + 30 && bullet.y > enemy.y && bullet.y < enemy.y + 30;
+        if (hit) {
+          bulletHit = true;
           setScore((prevScore) => prevScore + 1); // Increase score
         }
+        return !hit; // Remove enemy if hit
       });
+      return !bulletHit; // Remove bullet if it hits an enemy
     });
 
-    setEnemies(updatedEnemies);
-    setBullets(updatedBullets);
+    // Only update state after all calculations are done
+    setEnemies(remainingEnemies);
+    setBullets(remainingBullets);
   };
 
   // useEffect to handle player movement
@@ -74,24 +74,31 @@ const useGameLogic = () => {
     return () => window.removeEventListener('keydown', handlePlayerMovement);
   }, []);
 
-  // useEffect to update bullets
+  // useEffect to update bullets and check collisions
   useEffect(() => {
-    const interval = setInterval(() => {
+    const bulletInterval = setInterval(() => {
       updateBullets();
-      checkCollisions();
     }, 50);
-    return () => clearInterval(interval);
-  }, [bullets, enemies]);
+    return () => clearInterval(bulletInterval);
+  }, []); // Bullet movement is independent
 
-  // useEffect to spawn enemies and update their positions
+  // useEffect to spawn and update enemies
   useEffect(() => {
-    const enemyInterval = setInterval(spawnEnemy, 2000);
-    const updateInterval = setInterval(updateEnemies, 50);
+    const enemySpawnInterval = setInterval(spawnEnemy, 2000);
+    const enemyUpdateInterval = setInterval(updateEnemies, 50);
     return () => {
-      clearInterval(enemyInterval);
-      clearInterval(updateInterval);
+      clearInterval(enemySpawnInterval);
+      clearInterval(enemyUpdateInterval);
     };
   }, []);
+
+  // useEffect to check collisions separately
+  useEffect(() => {
+    const collisionInterval = setInterval(() => {
+      checkCollisions();
+    }, 50);
+    return () => clearInterval(collisionInterval);
+  }, [bullets, enemies]);
 
   return { playerPosition, bullets, enemies, shootBullet, score };
 };
