@@ -32,7 +32,6 @@ const useGameLogic = () => {
   const spawnEnemy = () => {
     const newEnemy = { x: Math.random() * 770, y: 0, speed: 2 + Math.random() * 2 };
     setEnemies((prevEnemies) => [...prevEnemies, newEnemy]);
-    console.log("Enemy spawned:", newEnemy); // Debug: Check if enemies are being spawned
   };
 
   // Update enemy positions
@@ -44,6 +43,31 @@ const useGameLogic = () => {
     );
   };
 
+  // Check for collisions between bullets and enemies
+  const checkCollisions = () => {
+    let updatedEnemies = [...enemies];
+    let updatedBullets = [...bullets];
+
+    bullets.forEach((bullet, bulletIndex) => {
+      enemies.forEach((enemy, enemyIndex) => {
+        if (
+          bullet.x > enemy.x &&
+          bullet.x < enemy.x + 30 &&
+          bullet.y > enemy.y &&
+          bullet.y < enemy.y + 30
+        ) {
+          // Collision detected
+          updatedEnemies.splice(enemyIndex, 1); // Remove enemy
+          updatedBullets.splice(bulletIndex, 1); // Remove bullet
+          setScore((prevScore) => prevScore + 1); // Increase score
+        }
+      });
+    });
+
+    setEnemies(updatedEnemies);
+    setBullets(updatedBullets);
+  };
+
   // useEffect to handle player movement
   useEffect(() => {
     window.addEventListener('keydown', handlePlayerMovement);
@@ -52,15 +76,17 @@ const useGameLogic = () => {
 
   // useEffect to update bullets
   useEffect(() => {
-    const interval = setInterval(updateBullets, 50);
+    const interval = setInterval(() => {
+      updateBullets();
+      checkCollisions();
+    }, 50);
     return () => clearInterval(interval);
-  }, []);
+  }, [bullets, enemies]);
 
   // useEffect to spawn enemies and update their positions
   useEffect(() => {
     const enemyInterval = setInterval(spawnEnemy, 2000);
     const updateInterval = setInterval(updateEnemies, 50);
-
     return () => {
       clearInterval(enemyInterval);
       clearInterval(updateInterval);
