@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 const useGameLogic = () => {
   const [playerPosition, setPlayerPosition] = useState({ x: 400, y: 550 });
   const [bullets, setBullets] = useState([]);
+  const [enemies, setEnemies] = useState([]);
+  const [score, setScore] = useState(0);
 
   // Handle player movement
   const handlePlayerMovement = (event) => {
@@ -26,19 +28,46 @@ const useGameLogic = () => {
     );
   };
 
+  // Spawn new enemies
+  const spawnEnemy = () => {
+    const newEnemy = { x: Math.random() * 770, y: 0, speed: 2 + Math.random() * 2 };
+    setEnemies((prevEnemies) => [...prevEnemies, newEnemy]);
+    console.log("Enemy spawned:", newEnemy); // Debug: Check if enemies are being spawned
+  };
+
+  // Update enemy positions
+  const updateEnemies = () => {
+    setEnemies((prevEnemies) =>
+      prevEnemies
+        .map((enemy) => ({ ...enemy, y: enemy.y + enemy.speed }))
+        .filter((enemy) => enemy.y < 600)
+    );
+  };
+
   // useEffect to handle player movement
   useEffect(() => {
     window.addEventListener('keydown', handlePlayerMovement);
     return () => window.removeEventListener('keydown', handlePlayerMovement);
-  }, [playerPosition]);
+  }, []);
 
   // useEffect to update bullets
   useEffect(() => {
     const interval = setInterval(updateBullets, 50);
     return () => clearInterval(interval);
-  }, [bullets]);
+  }, []);
 
-  return { playerPosition, bullets, shootBullet };
+  // useEffect to spawn enemies and update their positions
+  useEffect(() => {
+    const enemyInterval = setInterval(spawnEnemy, 2000);
+    const updateInterval = setInterval(updateEnemies, 50);
+
+    return () => {
+      clearInterval(enemyInterval);
+      clearInterval(updateInterval);
+    };
+  }, []);
+
+  return { playerPosition, bullets, enemies, shootBullet, score };
 };
 
 export default useGameLogic;
