@@ -1,4 +1,7 @@
 import { useState, useEffect } from 'react';
+import spaceshipImage from '../assets/spaceship.png'; // Path to spaceship image
+import alienImage from '../assets/alien.gif'; // Path to alien image
+import useBackgroundImage from './useBackgroundImage'; // Import the background from api hook
 
 const useGameLogic = () => {
   const [playerPosition, setPlayerPosition] = useState({ x: 400, y: 550 });
@@ -6,12 +9,20 @@ const useGameLogic = () => {
   const [enemies, setEnemies] = useState([]);
   const [score, setScore] = useState(0);
   const [isGameOver, setIsGameOver] = useState(false);
+  const backgroundImage = useBackgroundImage(); // Use the custom hook
+
+  // Load images for the spaceship and alien
+  const spaceship = new Image();
+  spaceship.src = spaceshipImage;
+
+  const alien = new Image();
+  alien.src = alienImage;
 
   // Handle player movement with boundary checks
-  const handlePlayerMovement = (event) => {
-    if (event.key === 'ArrowLeft' && playerPosition.x > 0) {
+  const handlePlayerMovement = (eve) => {
+    if (eve.key === 'ArrowLeft' && playerPosition.x > 0) {
       setPlayerPosition((prev) => ({ ...prev, x: Math.max(0, prev.x - 10) }));
-    } else if (event.key === 'ArrowRight' && playerPosition.x < 770) {
+    } else if (eve.key === 'ArrowRight' && playerPosition.x < 770) {
       setPlayerPosition((prev) => ({ ...prev, x: Math.min(770, prev.x + 10) }));
     }
   };
@@ -19,7 +30,7 @@ const useGameLogic = () => {
   // Shoot a bullet
   const shootBullet = () => {
     if (!isGameOver) {
-      const newBullet = { x: playerPosition.x + 12.5, y: playerPosition.y };
+      const newBullet = { x: playerPosition.x + 17.5, y: playerPosition.y };
       setBullets((prevBullets) => [...prevBullets, newBullet]);
     }
   };
@@ -69,9 +80,9 @@ const useGameLogic = () => {
       remainingEnemies = remainingEnemies.filter((enemy) => {
         const hit =
           bullet.x > enemy.x &&
-          bullet.x < enemy.x + 30 &&
+          bullet.x < enemy.x + 40 &&
           bullet.y > enemy.y &&
-          bullet.y < enemy.y + 30;
+          bullet.y < enemy.y + 40;
         if (hit) {
           bulletHit = true;
           setScore((prevScore) => prevScore + 1); // Increase score
@@ -129,7 +140,18 @@ const useGameLogic = () => {
     }
   }, [bullets, enemies, isGameOver]);
 
-  return { playerPosition, bullets, enemies, shootBullet, score, isGameOver, restartGame };
+  return {
+    playerPosition,
+    bullets,
+    enemies,
+    shootBullet,
+    score,
+    isGameOver,
+    restartGame,
+    spaceship,
+    alien,
+    backgroundImage,
+  };
 };
 
 export default useGameLogic;
