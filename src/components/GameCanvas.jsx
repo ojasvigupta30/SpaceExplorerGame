@@ -3,7 +3,7 @@ import useGameLogic from '../hooks/useGameLogic';
 
 const GameCanvas = () => {
   const canvasRef = useRef(null);
-  const { playerPosition, bullets, enemies, shootBullet, score } = useGameLogic();
+  const { playerPosition, bullets, enemies, shootBullet, score, isGameOver } = useGameLogic();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -28,17 +28,23 @@ const GameCanvas = () => {
       enemies.forEach((enemy) => {
         context.fillRect(enemy.x, enemy.y, 30, 30);
       });
-      console.log("Enemies drawn on canvas:", enemies); // Debug: Check if enemies are drawn
+
+      // Draw Game Over message
+      if (isGameOver) {
+        context.fillStyle = 'white';
+        context.font = '48px Arial';
+        context.fillText('Game Over', 300, 300);
+      }
     };
 
     draw(); // Initial draw
 
-    // Redraw when playerPosition, bullets, or enemies change
-  }, [playerPosition, bullets, enemies]);
+    // Redraw when playerPosition, bullets, enemies, or isGameOver changes
+  }, [playerPosition, bullets, enemies, isGameOver]);
 
   // Listen for spacebar to shoot
   const handleKeyDown = (event) => {
-    if (event.key === ' ') {
+    if (event.key === ' ' && !isGameOver) {
       shootBullet();
     }
   };
@@ -46,7 +52,7 @@ const GameCanvas = () => {
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [shootBullet]);
+  }, [shootBullet, isGameOver]);
 
   return (
     <div>

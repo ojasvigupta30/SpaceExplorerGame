@@ -5,6 +5,7 @@ const useGameLogic = () => {
   const [bullets, setBullets] = useState([]);
   const [enemies, setEnemies] = useState([]);
   const [score, setScore] = useState(0);
+  const [isGameOver, setIsGameOver] = useState(false);
 
   // Handle player movement
   const handlePlayerMovement = (event) => {
@@ -17,8 +18,10 @@ const useGameLogic = () => {
 
   // Shoot a bullet
   const shootBullet = () => {
-    const newBullet = { x: playerPosition.x + 12.5, y: playerPosition.y };
-    setBullets((prevBullets) => [...prevBullets, newBullet]);
+    if (!isGameOver) {
+      const newBullet = { x: playerPosition.x + 12.5, y: playerPosition.y };
+      setBullets((prevBullets) => [...prevBullets, newBullet]);
+    }
   };
 
   // Update bullet positions
@@ -32,17 +35,28 @@ const useGameLogic = () => {
 
   // Spawn new enemies
   const spawnEnemy = () => {
-    const newEnemy = { x: Math.random() * 770, y: 0, speed: 2 + Math.random() * 2 };
-    setEnemies((prevEnemies) => [...prevEnemies, newEnemy]);
+    if (!isGameOver) {
+      const newEnemy = { x: Math.random() * 770, y: 0, speed: 2 + Math.random() * 2 };
+      setEnemies((prevEnemies) => [...prevEnemies, newEnemy]);
+    }
   };
 
-  // Update enemy positions
+  // Update enemy positions and check for game over
   const updateEnemies = () => {
-    setEnemies((prevEnemies) =>
-      prevEnemies
-        .map((enemy) => ({ ...enemy, y: enemy.y + enemy.speed })) // Move enemies down
-        .filter((enemy) => enemy.y < 600) // Keep enemies on screen
-    );
+    setEnemies((prevEnemies) => {
+      const updatedEnemies = prevEnemies.map((enemy) => ({
+        ...enemy,
+        y: enemy.y + enemy.speed,
+      }));
+
+      // Check if any enemy reaches the bottom
+      const gameOver = updatedEnemies.some((enemy) => enemy.y >= 550);
+      if (gameOver) {
+        setIsGameOver(true);
+      }
+
+      return updatedEnemies.filter((enemy) => enemy.y < 600); // Keep enemies on screen
+    });
   };
 
   // Check for collisions between bullets and enemies
@@ -53,7 +67,11 @@ const useGameLogic = () => {
     remainingBullets = remainingBullets.filter((bullet) => {
       let bulletHit = false;
       remainingEnemies = remainingEnemies.filter((enemy) => {
-        const hit = bullet.x > enemy.x && bullet.x < enemy.x + 30 && bullet.y > enemy.y && bullet.y < enemy.y + 30;
+        const hit =
+          bullet.x > enemy.x &&
+          bullet.x < enemy.x + 30 &&
+          bullet.y > enemy.y &&
+          bullet.y < enemy.y + 30;
         if (hit) {
           bulletHit = true;
           setScore((prevScore) => prevScore + 1); // Increase score
@@ -76,31 +94,33 @@ const useGameLogic = () => {
 
   // useEffect to update bullets and check collisions
   useEffect(() => {
-    const bulletInterval = setInterval(() => {
-      updateBullets();
-    }, 50);
-    return () => clearInterval(bulletInterval);
-  }, []); // Bullet movement is independent
+    if (!isGameOver) {
+      const bulletInterval = setInterval(updateBullets, 50);
+      return () => clearInterval(bulletInterval);
+    }
+  }, [isGameOver]);
 
   // useEffect to spawn and update enemies
   useEffect(() => {
-    const enemySpawnInterval = setInterval(spawnEnemy, 2000);
-    const enemyUpdateInterval = setInterval(updateEnemies, 50);
-    return () => {
-      clearInterval(enemySpawnInterval);
-      clearInterval(enemyUpdateInterval);
-    };
-  }, []);
+    if (!isGameOver) {
+      const enemySpawnInterval = setInterval(spawnEnemy, 2000);
+      const enemyUpdateInterval = setInterval(updateEnemies, 50);
+      return () => {
+        clearInterval(enemySpawnInterval);
+        clearInterval(enemyUpdateInterval);
+      };
+    }
+  }, [isGameOver]);
 
   // useEffect to check collisions separately
   useEffect(() => {
-    const collisionInterval = setInterval(() => {
-      checkCollisions();
-    }, 50);
-    return () => clearInterval(collisionInterval);
-  }, [bullets, enemies]);
+    if (!isGameOver) {
+      const collisionInterval = setInterval(checkCollisions, 50);
+      return () => clearInterval(collisionInterval);
+    }
+  }, [bullets, enemies, isGameOver]);
 
-  return { playerPosition, bullets, enemies, shootBullet, score };
+  return { playerPosition, bullets, enemies, shootBullet, score, isGameOver };
 };
 
 export default useGameLogic;
