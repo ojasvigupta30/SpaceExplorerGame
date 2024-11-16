@@ -1,6 +1,7 @@
 // hooks/useBackgroundImage.js
 import { useState, useEffect } from 'react';
-import apiKey from './apiKey.mjs';
+
+
 
 const useBackgroundImage = () => {
   const [backgroundImage, setBackgroundImage] = useState('');
@@ -8,7 +9,7 @@ const useBackgroundImage = () => {
   useEffect(() => {
     const fetchBackgroundImage = async () => {
       try {
-        apiKey;
+        const apiKey = import.meta.env.VITE_apiKey;
         const response = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${apiKey}`);
         const data = await response.json();
         if (data && data.url) {
