@@ -35,6 +35,29 @@ This project is a space-themed shooting game built using React, JavaScript, and 
 - **Vite**: Used as the development and build tool for the project.
 - **HTML & CSS**: Basic structure and styling for the game interface.
 
+
+## How to Play
+
+1. **Launch the Game**: Open the game in your browser by navigating to the local development server URL.
+2. **Move Your Spaceship**: Use the left and right arrow keys to move your spaceship.
+3. **Shoot Bullets**: Press the spacebar to shoot bullets at the incoming aliens.
+4. **Score Points**: Destroy aliens to increase your score.
+Game Over: If an alien reaches the bottom of the canvas, the game is over, and you can restart by clicking the Restart button.
+
+## Features
+
+- **Dynamic Background**: Space background fetched from the NASA API, making each session visually unique.
+- **Smooth Player Controls**: Responsive spaceship movement with boundary checks.
+- **Interactive Gameplay**: Shooting mechanics and enemy spawning for an engaging experience.
+- **Score Tracking**: Real-time score display to keep players motivated.
+- **Game Over State**: Clear indication when the game ends, with the option to restart.
+- **Stylish UI**: Custom fonts and a vibrant design for a futuristic look.
+
+## Live Demo
+
+**[Space Shooter Explorer Game](https://space-shooter-explorer-game.onrender.com/)**
+
+
 ## Setup Instructions
 
 1. **Clone the Repository**:
@@ -54,24 +77,6 @@ This project is a space-themed shooting game built using React, JavaScript, and 
 4. **Start the Development Server**:
    ```bash
    npm run dev
-
-## How to Play
-
-1. **Launch the Game**: Open the game in your browser by navigating to the local development server URL.
-2. **Move Your Spaceship**: Use the left and right arrow keys to move your spaceship.
-3. **Shoot Bullets**: Press the spacebar to shoot bullets at the incoming aliens.
-4. **Score Points**: Destroy aliens to increase your score.
-Game Over: If an alien reaches the bottom of the canvas, the game is over, and you can restart by clicking the Restart button.
-
-## Features
-
-- **Dynamic Background**: Space background fetched from the NASA API, making each session visually unique.
-- **Smooth Player Controls**: Responsive spaceship movement with boundary checks.
-- **Interactive Gameplay**: Shooting mechanics and enemy spawning for an engaging experience.
-- **Score Tracking**: Real-time score display to keep players motivated.
-- **Game Over State**: Clear indication when the game ends, with the option to restart.
-- **Stylish UI**: Custom fonts and a vibrant design for a futuristic look.
-
 
 ## Challenges Faced
 
