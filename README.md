@@ -10,7 +10,6 @@ Welcome to the **Space Explorer Shooting Game**! A thrilling, fast-paced, browse
 - [Setup Instructions](#setup-instructions)
 - [How to Play](#how-to-play)
 - [Features](#features)
-- [Screenshots](#screenshots)
 - [Challenges Faced](#challenges-faced)
 - [Future Enhancements](#future-enhancements)
 - [Credits](#credits)
