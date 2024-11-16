@@ -7,12 +7,12 @@ const useGameLogic = () => {
   const [score, setScore] = useState(0);
   const [isGameOver, setIsGameOver] = useState(false);
 
-  // Handle player movement
+  // Handle player movement with boundary checks
   const handlePlayerMovement = (event) => {
     if (event.key === 'ArrowLeft' && playerPosition.x > 0) {
-      setPlayerPosition((prev) => ({ ...prev, x: prev.x - 10 }));
+      setPlayerPosition((prev) => ({ ...prev, x: Math.max(0, prev.x - 10) }));
     } else if (event.key === 'ArrowRight' && playerPosition.x < 770) {
-      setPlayerPosition((prev) => ({ ...prev, x: prev.x + 10 }));
+      setPlayerPosition((prev) => ({ ...prev, x: Math.min(770, prev.x + 10) }));
     }
   };
 
