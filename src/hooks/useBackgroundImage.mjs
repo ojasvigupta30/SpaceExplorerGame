@@ -8,6 +8,7 @@ const useBackgroundImage = () => {
   useEffect(() => {
     const fetchBackgroundImage = async () => {
       try {
+        apiKey;
         const response = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${apiKey}`);
         const data = await response.json();
         if (data && data.url) {
