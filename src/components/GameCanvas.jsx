@@ -3,7 +3,7 @@ import useGameLogic from '../hooks/useGameLogic';
 
 const GameCanvas = () => {
   const canvasRef = useRef(null);
-  const { playerPosition, bullets, enemies, shootBullet, score, isGameOver } = useGameLogic();
+  const { playerPosition, bullets, enemies, shootBullet, score, isGameOver, restartGame } = useGameLogic();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -59,6 +59,7 @@ const GameCanvas = () => {
       <canvas ref={canvasRef} width={800} height={600}></canvas>
       <div className="hud">
         <p>Score: {score}</p>
+        {isGameOver && <button onClick={restartGame}>Restart</button>}
       </div>
     </div>
   );

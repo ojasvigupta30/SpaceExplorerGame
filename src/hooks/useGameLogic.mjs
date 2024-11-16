@@ -86,6 +86,15 @@ const useGameLogic = () => {
     setBullets(remainingBullets);
   };
 
+  // Restart the game
+  const restartGame = () => {
+    setPlayerPosition({ x: 400, y: 550 });
+    setBullets([]);
+    setEnemies([]);
+    setScore(0);
+    setIsGameOver(false);
+  };
+
   // useEffect to handle player movement
   useEffect(() => {
     window.addEventListener('keydown', handlePlayerMovement);
@@ -120,7 +129,7 @@ const useGameLogic = () => {
     }
   }, [bullets, enemies, isGameOver]);
 
-  return { playerPosition, bullets, enemies, shootBullet, score, isGameOver };
+  return { playerPosition, bullets, enemies, shootBullet, score, isGameOver, restartGame };
 };
 
 export default useGameLogic;
