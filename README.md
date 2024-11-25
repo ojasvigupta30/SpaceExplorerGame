@@ -2,6 +2,10 @@
 
 Welcome to the **Space Explorer Shooting Game**! A thrilling, fast-paced, browser-based shooting game where you control a spaceship to fend off incoming alien enemies. Your mission is to survive as long as you can while scoring as many points as possible!
 
+## Live Demo
+
+**[Space Shooter Explorer Game](https://space-shooter-explorer-game.onrender.com/)**
+
 ## Table of Contents
 
 - [Overview](#overview)
@@ -52,11 +56,6 @@ Game Over: If an alien reaches the bottom of the canvas, the game is over, and y
 - **Score Tracking**: Real-time score display to keep players motivated.
 - **Game Over State**: Clear indication when the game ends, with the option to restart.
 - **Stylish UI**: Custom fonts and a vibrant design for a futuristic look.
-
-## Live Demo
-
-**[Space Shooter Explorer Game](https://space-shooter-explorer-game.onrender.com/)**
-
 
 ## Setup Instructions
 
